@@ -243,8 +243,10 @@ RegisterNetEvent('angelicxs-NPCCrew:CategoryMenu', function(info, options)
                 })
         elseif Config.OXLib then
             table.insert(menu, {
-                label = text,
-                args = { data = op }
+                title = text,
+                onSelect = function()
+                    TriggerEvent("angelicxs-NPCCrew:CrewGrab", op)
+                end,
             })
         end
 
@@ -262,18 +264,14 @@ RegisterNetEvent('angelicxs-NPCCrew:CategoryMenu', function(info, options)
         })
         TriggerEvent("qb-menu:client:openMenu", menu)
     elseif Config.OXLib then
-        table.insert(menu, {
-            label = Config.Lang['cancel'],
-        })
-        lib.registerMenu({
+        lib.registerContext({
             id = 'NPCCrewCategorymenu_ox',
             title = Config.Lang['menu_header'],
             options = menu,
             position = 'top-right',
         }, function(selected, scrollIndex, args)
-                TriggerEvent("angelicxs-NPCCrew:CrewGrab", args.data)
         end)
-        lib.showMenu('NPCCrewCategorymenu_ox')
+        lib.showContext('NPCCrewCategorymenu_ox')
     end
 end)
 
