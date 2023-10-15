@@ -55,6 +55,14 @@ CreateThread(function()
                 local playerData = ESX.GetPlayerData()
                 if playerData.job.name ~= nil then
                     PlayerGang = playerData.job.name
+                    local gangcheck = false
+                    for k,v in pairs(Config.NPCCrew) do
+                        if PlayerGang == k then
+                            gangcheck = true
+                            break
+                        end
+                    end
+                    if not gangcheck then PlayerGang = 'none' end
                     if DoesRelationshipGroupExist(Relationships[PlayerGang]) then
                         SetPedRelationshipGroupHash(PlayerPedId(), Relationships[PlayerGang])
                     else
@@ -68,6 +76,14 @@ CreateThread(function()
 
         RegisterNetEvent('esx:setJob', function(job)
             PlayerGang = job.name
+            local gangcheck = false
+            for k,v in pairs(Config.NPCCrew) do
+                if PlayerGang == k then
+                    gangcheck = true
+                    break
+                end
+            end
+            if not gangcheck then PlayerGang = 'none' end
             if DoesRelationshipGroupExist(Relationships[PlayerGang]) then
                 SetPedRelationshipGroupHash(PlayerPedId(), Relationships[PlayerGang])
             else
@@ -193,14 +209,15 @@ RegisterNetEvent('angelicxs-NPCCrew:BossSpawner',function(info, options)
                 if Dist <= 15 then 
                     sleep = 0
                     if Dist <= 5 then 
-                        DrawText3Ds(Data2.x, Data2.y, Data2.z, Config.Lang['request_crew_3d'])
+                        DrawText3Ds(info.boss.x, info.boss.y, info.boss.z, Config.Lang['request_crew_3d'])
                         if IsControlJustReleased(0, 38) then
-                            TriggerEvent('angelicxs-NPCCrew:CategoryMenu', info.crew, info.spawn, options)
+                            TriggerEvent('angelicxs-NPCCrew:CategoryMenu', info, options)
                         end
                     end
                 end
             end
         end
+        Wait(sleep)
     end
 end)
 
@@ -415,6 +432,21 @@ function HashGrabber(model)
       Wait(10)
     end
     return hash
+end
+
+function DrawText3Ds(x,y,z, text)
+    local onScreen,_x,_y=World3dToScreen2d(x,y,z)
+    local px,py,pz=table.unpack(GetGameplayCamCoords())
+    SetTextScale(0.30, 0.30)
+    SetTextFont(4)
+    SetTextProportional(1)
+    SetTextColour(255, 255, 255, 215)
+    SetTextEntry('STRING')
+    SetTextCentre(1)
+    AddTextComponentString(text)
+    DrawText(_x,_y)
+    local factor = (string.len(text)) / 370
+    DrawRect(_x,_y+0.0125, 0.015+ factor, 0.03, 41, 11, 41, 68)
 end
 
 AddEventHandler('onResourceStop', function(resource)
