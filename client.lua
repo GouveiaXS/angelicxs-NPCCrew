@@ -6,6 +6,7 @@ Relationships = {}
 garbage = nil
 local CrewSpawns = {}
 local BossPed = nil
+local gangcheck = false
 
 RegisterNetEvent('angelicxs-NPCCrew:Notify', function(message, type)
 	if Config.UseCustomNotify then
@@ -55,18 +56,11 @@ CreateThread(function()
                 local playerData = ESX.GetPlayerData()
                 if playerData.job.name ~= nil then
                     PlayerGang = playerData.job.name
-                    local gangcheck = false
                     for k,v in pairs(Config.NPCCrew) do
                         if PlayerGang == k then
                             gangcheck = true
                             break
                         end
-                    end
-                    if not gangcheck then PlayerGang = 'none' end
-                    if DoesRelationshipGroupExist(Relationships[PlayerGang]) then
-                        SetPedRelationshipGroupHash(PlayerPedId(), Relationships[PlayerGang])
-                    else
-                        SetPedRelationshipGroupHash(PlayerPedId(), Relationships['none'])
                     end
                     break
                 end
@@ -76,34 +70,23 @@ CreateThread(function()
 
         RegisterNetEvent('esx:setJob', function(job)
             PlayerGang = job.name
-            local gangcheck = false
+            gangcheck = false
             for k,v in pairs(Config.NPCCrew) do
                 if PlayerGang == k then
                     gangcheck = true
                     break
                 end
             end
-            if not gangcheck then PlayerGang = 'none' end
-            if DoesRelationshipGroupExist(Relationships[PlayerGang]) then
-                SetPedRelationshipGroupHash(PlayerPedId(), Relationships[PlayerGang])
-            else
-                SetPedRelationshipGroupHash(PlayerPedId(), Relationships['none'])
-            end
         end)
 
     elseif Config.UseQBCore then
         QBCore = exports['qb-core']:GetCoreObject()
-        
+        gangcheck = true
         CreateThread(function ()
 			while true do
                 local playerData = QBCore.Functions.GetPlayerData()
 				if playerData.citizenid ~= nil then
 					PlayerGang = playerData.gang.name
-                    if DoesRelationshipGroupExist(Relationships[PlayerGang]) then
-                        SetPedRelationshipGroupHash(PlayerPedId(), Relationships[PlayerGang])
-                    else
-                        SetPedRelationshipGroupHash(PlayerPedId(), Relationships['none'])
-                    end
 					break
 				end
 				Wait(100)
@@ -113,11 +96,6 @@ CreateThread(function()
         RegisterNetEvent('QBCore:Client:OnJobUpdate', function(job)
             local playerData = QBCore.Functions.GetPlayerData()
             PlayerGang = playerData.gang.name
-            if DoesRelationshipGroupExist(Relationships[PlayerGang]) then
-                SetPedRelationshipGroupHash(PlayerPedId(), Relationships[PlayerGang])
-            else
-                SetPedRelationshipGroupHash(PlayerPedId(), Relationships['none'])
-            end
         end)
     end
 end)
@@ -306,12 +284,14 @@ RegisterNetEvent('angelicxs-NPCCrew:CrewGrab', function(info)
     if Config.UseESX then
         ESX.TriggerServerCallback('angelicxs-NPCCrew:PayUp:ESX', function(cb)
             if cb then
+                RelationshipSetter()
                 CrewAttributes(info.crew, info)
             end
         end, info.cost)                                    
     elseif Config.UseQBCore then
         QBCore.Functions.TriggerCallback('angelicxs-NPCCrew:PayUp:QBCore', function(cb)
             if cb then
+                RelationshipSetter()
                 CrewAttributes(info.crew, info)
             end
         end, info.cost)
@@ -447,6 +427,14 @@ function DrawText3Ds(x,y,z, text)
     DrawText(_x,_y)
     local factor = (string.len(text)) / 370
     DrawRect(_x,_y+0.0125, 0.015+ factor, 0.03, 41, 11, 41, 68)
+end
+
+function RelationshipSetter()
+    if DoesRelationshipGroupExist(Relationships[PlayerGang]) and gangcheck then
+        SetPedRelationshipGroupHash(PlayerPedId(), Relationships[PlayerGang])
+    else
+        SetPedRelationshipGroupHash(PlayerPedId(), Relationships['none'])
+    end
 end
 
 AddEventHandler('onResourceStop', function(resource)
