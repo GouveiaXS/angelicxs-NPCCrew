@@ -19,7 +19,7 @@ Config.UseCustomNotify = false				-- Use a custom notification script, must comp
 RegisterNetEvent('angelicxs-NPCCrew:CustomNotify')
 AddEventHandler('angelicxs-NPCCrew:CustomNotify', function(message, type)
     --exports.mythic_notify:SendAlert(type, message, 4000)
-    --exports['okokNotify']:Alert('', Message, 4000, type, false)
+    --exports['okokNotify']:Alert('', message, 4000, type, false)
 end)
 
 Config.NHMenu = false						-- Use NH-Menu [https://github.com/whooith/nh-context]
