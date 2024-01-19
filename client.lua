@@ -97,6 +97,9 @@ CreateThread(function()
             local playerData = QBCore.Functions.GetPlayerData()
             PlayerGang = playerData.gang.name
         end)
+	RegisterNetEvent('QBCore:Client:OnGangUpdate', function(InfoGang)
+            PlayerGang = InfoGang
+	end)
     end
 end)
 
