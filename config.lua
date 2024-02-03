@@ -82,7 +82,7 @@ Config.NPCCrew ={
         ['BlipColour'] = 2,                                     -- Colour of blips
     },
     --[[
-    ['none'] = {                                                -- Crew Name      !!!! 'none' crews can be hired by anyone not in one of the gangs above !!!!
+    ['none'] = {                                                -- Crew Name      !!!! 'none' crews can be hired by anyone not in a gangs (for ESX not in one of the gangs above) !!!!
         ['CrewBosses'] = {                                      -- Crewboss information, can have multiple loctions, spawn is where the peds come from
             {boss = vector4(-1072.85, -2001.74, 13.16, 123.24), spawn = vector4(-1070.53, -2003.05, 15.79, 135.55), model = 'g_m_m_chiboss_01'},
         },
