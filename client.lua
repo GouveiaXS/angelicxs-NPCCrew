@@ -93,12 +93,8 @@ CreateThread(function()
 			end
 		end)
 
-        RegisterNetEvent('QBCore:Client:OnJobUpdate', function(job)
-            local playerData = QBCore.Functions.GetPlayerData()
-            PlayerGang = playerData.gang.name
-        end)
 	RegisterNetEvent('QBCore:Client:OnGangUpdate', function(InfoGang)
-            PlayerGang = InfoGang
+            PlayerGang = InfoGang.name
 	end)
     end
 end)
