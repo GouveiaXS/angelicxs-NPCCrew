@@ -116,13 +116,6 @@ CreateThread(function()
                         if Dist2 > 50 then
                             SetEntityAsNoLongerNeeded(BossPed)
                             PedSpawned = false
-                            if Config.UseThirdEye then
-                                if Config.ThirdEyeName == 'ox_target' then
-                                    exports.ox_target:removeZone('NPCCrewBossPed')
-                                else
-                                    exports[Config.ThirdEyeName]:RemoveZone('NPCCrewBossPed')
-                                end
-                            end
                         end
                     end
                     Wait(2000)
@@ -144,7 +137,7 @@ RegisterNetEvent('angelicxs-NPCCrew:BossSpawner',function(info, options)
         if Config.ThirdEyeName == 'ox_target' then
             local options = {
                 {
-                    name = 'NPCCrewBossPed',
+                    name = 'NPCCrewBossPed'..tostring(info.boss),
                     label = Config.Lang['request_crew'],
                     onSelect = function()
                         TriggerEvent('angelicxs-NPCCrew:CategoryMenu', info, options)
@@ -156,8 +149,8 @@ RegisterNetEvent('angelicxs-NPCCrew:BossSpawner',function(info, options)
             }
             exports.ox_target:addLocalEntity(BossPed, options)
         else
-            exports[Config.ThirdEyeName]:AddEntityZone('NPCCrewBossPed', BossPed, {
-                name="NPCCrewBossPed",
+            exports[Config.ThirdEyeName]:AddEntityZone('NPCCrewBossPed'..tostring(info.boss), BossPed, {
+                name="NPCCrewBossPed"..tostring(info.boss),
                 debugPoly=false,
                 useZ = true
                 }, {
